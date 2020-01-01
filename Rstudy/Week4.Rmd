@@ -1,0 +1,328 @@
+---
+title: "KoLab R Study Week4"
+author: "Kibum Moon"
+date: May 2, 2019
+output: 
+  ioslides_presentation:
+    template: quarterly-report.html
+#    css: ['styles.css']
+    widescreen: true
+    smaller: true
+    fig_width: 3
+    fig_height: 3
+    fig_caption: true
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+#options(height = 50)
+#knitr::opts_chunk$set(fig.width=4, fig.height=2, dpi=200, out.width="940px", out.height="529px", echo = T)
+
+```
+# Week4
+
+## Data loading
+
+```{r}
+library(readxl)
+setwd("E:/Dropbox/study/R_study/19.03.28_R_study (Kolab)")
+w3 <- read_xlsx("Week3_example1.xlsx")
+```
+
+
+## Auto correlation plotter
+### base plot
+
+- Plot : 데이터를 시각화하는 방법
+
+- 여러 방법을 통해 data를 plotting할 수 있음
+
+- Base plot & ggplot2 
+
+- 두 변인의 관계를 보여주는 scatter plot
+
+```{r}
+plot(w3[["emo.wb"]], w3[["soc.wb"]]) 
+```
+
+## Auto correlation plotter
+### base plot
+
+- x, y 축 이름 추가
+
+```{r}
+plot(
+    w3[["emo.wb"]], # x axis
+    w3[["soc.wb"]], # y axis
+    xlab = "정서적 웰빙", # x axis label
+    ylab = "사회적 웰빙" # y axis label
+    ) 
+```
+
+
+## Auto correlation plotter
+### base plot
+
+- 회귀선 추가
+
+```{r}
+plot(
+    w3[["emo.wb"]], # x axis
+    w3[["soc.wb"]], # y axis
+    xlab = "정서적 웰빙", # x axis label
+    ylab = "사회적 웰빙" # y axis label
+    ) 
+abline(lm(w3[["soc.wb"]]~w3[["emo.wb"]]), col="blue")
+```
+
+
+## Plotting
+### saving plot
+
+- png("파일이름") : 파일이름.png 형태로 입력
+
+- 출력: dev.off()
+
+- plot을 저장할 때 필요한 것
+
+    - File name & Path
+    
+    - Size & Resolution
+    
+    - etc.
+
+
+## Plotting
+### saving plot
+
+- png("파일이름.png")
+
+- 출력: dev.off()
+
+- 예시
+
+```{r eval = F}
+png("파일이름.png") # 시작 
+
+plot 관련 코드
+
+dev.off() # 종료
+```
+
+## Plotting
+### saving plot
+
+
+```{r eval=F}
+png("plot1.png") # 시작
+
+plot(
+    w3[["emo.wb"]], # x axis
+    w3[["soc.wb"]], # y axis
+    xlab = "정서적 웰빙", # x axis label
+    ylab = "사회적 웰빙" # y axis label
+    ) 
+abline(lm(w3[["soc.wb"]]~w3[["emo.wb"]]), col="blue")
+
+dev.off() # 종료
+```
+
+
+## Plotting
+### base plot
+
+- **Quiz.** w3 전체 변인들의 상관 분석 후 유의한 변인 간의 scatter plot만을 저장해보세요. (p1)
+
+    - 어떤 작업들이 필요할까?
+
+## Plotting
+### base plot
+
+- **Quiz.** w3 전체 변인들의 상관 분석 후 유의한 변인 간의 scatter plot만을 저장해보세요. (p1)
+
+    - 서로 다른 두 수치 변인 선택
+    
+    - 상관 분석 실시
+    
+    - 상관 계수의 유의도가 0.05 이하인 경우 
+    
+        - 파일명 자동 작성
+    
+        - plot 저장 시작: png("파일명")
+        
+        - plot 작성
+        
+        - plot 저장 종료: dev.off()
+    
+
+
+## Plotting
+### base plot
+
+- **Quiz.** w3의 모든 두 수치변인 사이의 관계를 나타내는 scatter plot 출력해보세요. (5p)
+
+- hint:
+
+    - for loop를 사용해 두 수치 변인 선택
+    
+    - for loop 속에서 scatter plot 출력
+    
+    - scatter plot 출력 시 xlab 과 ylab을 names()와 i, j를 활용해 자동 변화
+    
+    - scatter plot 출력 시 회귀선을 i, j를 활용해 자동 변화
+
+## Plotting
+### base plot
+
+- **Quiz.** w3의 모든 두 수치변인 사이의 관계를 나타내는 scatter plot 출력해보세요. (5p)
+
+```{r eval=F}
+for (i in 1:ncol(w3)) {
+    for (j in 1:ncol(w3)) {
+        if (is.numeric(w3[[i]]) & is.numeric(w3[[j]]) & i != j) {
+        plot(w3[[i]],
+        w3[[j]],
+        xlab = names(w3)[i],
+        ylab = names(w3)[j])
+        abline(lm(w3[[j]] ~ w3[[i]]), col = "blue")
+        }
+    }
+}
+```
+
+
+## Plotting
+### base plot
+
+- 파일명 자동 작성
+
+- paste() 함수 사용
+
+    - sep은 각 요소 사이를 어떻게 할 것인지를 지정하는 argument
+    
+```{r}
+
+chr1 <- "고려대학교"
+chr2 <- "심리학과"
+paste(chr1, chr2) ; paste(chr1, chr2, sep = "") ; paste(chr1, chr2, sep = "_")
+
+```
+
+
+## Plotting
+### base plot
+
+- 4번째 변인과 5번째 변인으로 만들어진 파일명
+
+```{r}
+file_names <- paste(names(w3)[4], " X ", names(w3)[5], ".png", sep="")
+print(file_names)
+```
+
+
+## Plotting
+### base plot
+
+- **Quiz.** w3의 두 변인 사이의 scatter plot의 파일명은 어떻게 만들 수 있을까요? (2p)
+
+
+## Plotting
+### base plot
+
+- **Quiz.** w3의 두 변인 사이의 scatter plot의 파일명은 어떻게 만들 수 있을까요? (2p)
+
+```{r eval=F}
+for (i in 1:ncol(w3)) {
+    for (j in 1:ncol(w3)) {
+    if (is.numeric(w3[[i]]) & is.numeric(w3[[j]])  & i != j) {
+    file_name <-
+    paste(names(w3)[i], " X ", names(w3)[j], ".png", sep = "")
+    }
+    }
+}
+```
+
+    
+
+
+
+## Auto correlation plotter
+### base plot
+
+- **Quiz.** 다음의 명령을 수행하는 코드를 작성하세요. (4p)
+
+    - w3의 각 변인간 상관분석 실시
+    - 두 변인 간 상관이 유의한 경우 상관계수 및 유의도 저장
+    - 두 변인 간 상관이 유의한 경우 plot 저장
+    
+---
+```{r eval =F}
+whole.data <- data.frame()
+for (i in 1:ncol(w3)) {
+    for (j in 1:ncol(w3)) {
+        if (is.numeric(w3[[i]]) & is.numeric(w3[[j]])  & i != j) {
+            r <- cor.test(w3[[i]], w3[[j]])
+            p.value <- r$p.value
+            if (p.value < 0.05) {
+                p.value <- round(p.value, 2)
+                cor <- round(r$estimate, 2)
+                data <- data.frame(names(w3)[i], names(w3)[j], cor, p.value)
+                whole.data <- rbind(whole.data, data)
+                file_name <- paste(names(w3)[i],
+                                   " X ",
+                                   names(w3)[j],
+                                   ".png", sep = "")
+                png(file_name)
+                plot(w3[[i]],
+                     w3[[j]],
+                     xlab = names(w3)[i],
+                     ylab = names(w3)[j])
+                abline(lm(w3[[j]] ~ w3[[i]]), col = "blue")
+                dev.off()
+            }
+        }
+    }
+}
+```
+
+## Auto correlation plotter
+### base plot
+- 심화 버전
+- 변인 별로 폴더 생성 후 plot 저장
+
+---
+```{r eval =F}
+whole.data <- data.frame()
+for (i in 1:ncol(w3)) {
+    dir.name <- names(w3)[i]
+    dir.create(dir.name)
+    for (j in 1:ncol(w3)) {
+        if (is.numeric(w3[[i]]) & is.numeric(w3[[j]])  & i != j) {
+            r <- cor.test(w3[[i]], w3[[j]])
+            p.value <- r$p.value
+            if (p.value < 0.05) {
+                p.value <- round(p.value, 2)
+                cor <- round(r$estimate, 2)
+                data <- data.frame(names(w3)[i], names(w3)[j], cor, p.value)
+                whole.data <- rbind(whole.data, data)
+                file_name <- paste("./", dir.name,"/",
+                                   names(w3)[i]," X ",
+                                   names(w3)[j],
+                                   ".png", sep = "")
+                png(file_name)
+                plot(w3[[i]],
+                     w3[[j]],
+                     xlab = names(w3)[i],
+                     ylab = names(w3)[j])
+                abline(lm(w3[[j]] ~ w3[[i]]), col = "blue")
+                dev.off()
+            }
+        }
+    }
+}
+
+```
+
+
+ 

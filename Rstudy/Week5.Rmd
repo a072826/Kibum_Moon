@@ -1,0 +1,445 @@
+---
+title: "KoLab R Study Week5"
+author: "Kibum Moon"
+date: May 9, 2019
+output: 
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
+    fig_caption: true
+---
+
+```{r setup, include=FALSE}
+#knitr::opts_chunk$set(dev="CairoPNG", fig.width=7, fig.height=7, dpi = 72)
+options(digits = 4)
+library(showtext)
+```
+# Week5
+
+## Data loading
+
+```{r}
+library(readxl)
+# setwd("C:/Users/a0728/Dropbox/study/R_study/19.03.28_R_study (Kolab)")
+w3 <- read_xlsx("Week3_example1.xlsx")
+```
+
+
+## Functions
+### Function (함수)
+
+- 프로그래밍의 핵심 요소
+
+- 컴퓨터에게 특정한 과제를 시키는 역할 *(cf. 변수는 자료를 저장하는 역할)*
+
+- in-built functions / custom functions
+
+## Functions
+### in-built functions
+
+- 지금까지 배운 많은 함수들 
+
+    - ex. ?
+
+
+## Functions
+### custome functions
+
+- 사용자가 임의로 함수를 정의할 수 있음
+
+```{r eval=F}
+function_name <- function(arg1, arg2, ...) {
+    function codes
+}
+```
+
+## Functions
+
+```{r eval=F}
+function_name <- function(arg1, arg2, ...) {
+    function body
+}
+```
+
+```{r}
+standardizer <- function(data){
+    z <- (data - mean(data, na.rm=T)) / sd(data, na.rm = T)
+    z
+}
+```
+- function_name: standardize
+
+    - 임의로 지정할 수 있음. 
+    - 이 이름을 통해 R enviornment의 object(객체)로 저장됨
+
+- argument: 함수가 실행될 때, 해당 argument 자리에 우리가 입력한 값이 코드에 입력됨
+
+- function body: 함수가 수행해야 할 것을 모아놓은 code
+
+- return value: 함수의 결과로 출력되는 값. R에서는 마지막 줄
+
+## Functions
+
+- argument maching
+
+```{r}
+mydivision <- function(first_num, second_num) {
+    first_num / second_num
+}
+mydivision(2, 4)
+```
+```{r}
+mydivision <- function(a, b) {
+    a / b
+}
+mydivision(2, 4)
+```
+
+## Functions
+
+- argument maching
+
+
+```{r}
+mydivision <- function(a, b) {
+    a / b
+}
+mydivision(2, 4)
+```
+
+```{r}
+mydivision <- function(a, b) {
+    a / b
+}
+mydivision(b = 4, a = 2)
+```
+
+## Functions
+
+- argument: default
+
+```{r}
+mydivision <- function(a = 2, b = 4) {
+    a / b
+}
+mydivision()
+```
+
+## Functions
+
+```{r}
+standardizer <- function(data) {
+    (data - mean(data, na.rm = T)) / sd(data, na.rm = T)
+}
+standardizer(w3$emo.wb) # 결과1
+```
+```{r}
+standardizer <- function(data) {
+    z <- (data - mean(data, na.rm = T)) / sd(data, na.rm = T)
+    z
+}
+standardizer(w3$emo.wb) # 결과2
+```
+
+## Functions
+
+```{r error=T}
+z
+```
+
+- 함수 안에서 일어난 일은 함수 안의 일
+
+- R environment에 영향을 주지 않음
+
+- 함수의 결과를 입력하려면?
+
+## Functions
+
+```{r}
+w3$emo.em.z <- standardizer(w3$emo.em)
+w3$emo.em.z
+```
+
+## Functions 
+
+- 직접 함수를 만들어 봅시다!
+
+- 분석하면서 필요한 함수는??
+
+
+
+
+# Automated correlation plotting
+
+## Apply function
+`data[, sapply(data, is.numeric)]`
+
+## Apply function
+
+- **Quiz.** 모든 변인의 최대값을 알고 싶으면 어떻게 할까요? (1p)
+
+## Apply function
+
+- **Quiz.** 모든 변인의 최대값을 알고 싶으면 어떻게 할까요? (1p)
+
+```{r}
+for (i in 1:dim(w3)[2]){
+    m <- max(w3[[i]])
+    print(m)
+}
+```
+
+## Apply function
+
+```{r}
+apply(w3, 2, max)
+```
+
+## Apply function
+- more easier 
+```{r}
+sapply(w3,max)
+```
+
+## Apply function
+
+- For loop보다 코드가 간결하고 속도가 빠르다
+
+- apply(데이터, 방향, 함수)
+
+    - 방향: 행 = 1, 열 = 2
+    
+    - 함수: 원하는 함수 입력
+
+## Apply function
+```{r}
+sapply(w3, is.numeric)
+```
+- **Quiz.** 이 결과가 의미하는 것은 무엇일까요? (1p)
+- **Quiz.** `data[, sapply(data, is.numeric)]`의 결과가 의미하는 것은 무엇일까요? (2p)
+
+
+## Fonts
+
+- showtext()
+
+    - 구글에서 글꼴을 다운받아 바로 R에 장착
+    
+    - https://fonts.google.com/
+
+## Fonts
+
+```{r eval = F, fig.showtext=TRUE, fig.align='center', fig.height=5, fig.width=5}
+library(showtext)
+windows() # if your local os is Windows 
+# x11() # if your local os is Macos 
+font_add_google("Lobster", "lobster")
+plot(
+    w3$emo.wb,
+    w3$psy.wb,
+    main = "Pretty Fonts",
+    family = "lobster",
+    cex.lab = 2,
+    cex.axis = 1.5,
+    cex.main = 2
+    )
+    
+```
+## Fonts 
+
+```{r echo=F, fig.align='center', fig.height=5, fig.showtext=TRUE, fig.width=5, message=FALSE, warning=FALSE, paged.print=TRUE}
+font_add_google("Lobster", "lobster")
+plot(
+    w3$emo.wb,
+    w3$psy.wb,
+    main = "Pretty Fonts",
+    family = "lobster",
+    cex.lab = 2,
+    cex.axis = 1.5,
+    cex.main = 2
+    )
+    
+```
+
+## Fonts 
+
+```{r eval=F, fig.align='center', fig.height=5, fig.showtext=TRUE, fig.width=5, message=FALSE, warning=FALSE, paged.print=TRUE}
+font_add_google("Nanum Pen Script", "nanum_pen")
+plot(
+    w3$emo.wb,
+    w3$psy.wb,
+    main = "정서적 웰빙 & 심리적 웰빙",
+    family = "nanum_pen",
+    cex.lab = 2,
+    cex.axis = 1.5,
+    cex.main = 2
+    )
+    
+```
+
+## Fonts 
+
+```{r echo=F, fig.align='center', fig.height=5, fig.showtext=TRUE, fig.width=5, message=FALSE, warning=FALSE, paged.print=TRUE}
+font_add_google("Nanum Pen Script", "nanum_pen")
+plot(
+    w3$emo.wb,
+    w3$psy.wb,
+    main = "정서적 웰빙 & 심리적 웰빙",
+    family = "nanum_pen",
+    cex.lab = 2,
+    cex.axis = 1.5,
+    cex.main = 2
+    )
+```
+
+# Regression Analysis
+
+## Simple Regression
+```{r eval =F}
+m1 <- lm(종속변인 ~ 독립변인1, data)
+summary(m1)
+```
+
+## Multiple Regression
+```{r eval=F}
+m1 <- lm(종속변인 ~ 독립변인1 + 독립변인2 + 통제변인, data)
+summary(m1)
+```
+
+## Multiple Regression
+```{r}
+m1 <- lm(rs ~ psy.wb + emo.wb, w3)
+summary(m1)
+```
+
+## Multiple Regression
+
+- **Quiz.** 우울을 통제한 이후에도 관계 만족도를 유의하게 예측하는 독립변수를 찾아보세요. (3p)
+
+## Multiple Regression
+
+- **Quiz.** 우울을 통제한 이후에도 관계 만족도를 유의하게 예측하는 독립변수를 찾아보세요. (3p)
+
+```{r}
+whole.result <- data.frame()
+for (i in 1:length(w3)) {
+    m1 <- lm(rs ~ w3[[i]] + dep, w3)
+    r <- summary(m1)
+    p <- r$coefficients[2, 4]
+    b <- r$coefficients[2, 1]
+    
+    if (p < 0.05) {
+    p <- round(p, 2)
+    b <- round(b, 2)
+    result <- data.frame(names(w3)[i], b, p)
+    whole.result <- rbind(whole.result, result)
+    }
+}
+names(whole.result) <- c("Variable","b","p")    
+
+```
+---
+```{r}
+print(whole.result)
+```
+
+# RM ANOVA & Plotting
+
+## Long formatted data
+
+- Couple data
+
+    - relationship satisfaction
+    
+    - facial valence
+    
+    - etc.
+
+```{r}
+w5 <- read_xlsx("Week5_data.xlsx")
+str(w5)
+```
+
+## Reshape2()
+
+- Long format을 wide format으로 변경
+
+    - wide -> long 도 가능
+
+```{r eval=F}
+library(reshape2)
+long <- melt(data[, 사용열], id=c(만들열))
+```
+
+## Reshape2()
+
+- 예시
+
+```{r}
+library(reshape2)
+long <-
+    melt(w5[, c(
+    "ID","age",
+    "p_happy_facial_valence",
+    "p_neutral_facial_valence",
+    "p_angry_facial_valence",
+    "o_happy_facial_valence",
+    "o_neutral_facial_valence",
+    "o_angry_facial_valence"
+    )], id =  c("ID","age"))
+long
+```
+## RM ANOVA
+
+- Column이 총 4개
+
+    -   ID, age, variable, value
+
+- Target과 Emotion 조건은 어떻게 추가하지?
+
+```{r}
+head(long)
+```
+
+
+## RM ANOVA
+
+- variable에서 factor를 추출해야 한다.
+
+- `substr()` : data에서 특정 위치에 있는 문자 추출
+
+
+```{r}
+long$target <- as.factor(substr(long$variable, 1, 1))
+long$emotion <- as.factor(substr(long$variable,3,5))
+head(long)
+```
+
+
+## RM ANOVA
+
+- `aov_ez()`
+```{r}
+library(afex)
+m1 <-
+    aov_ez(
+    id = "ID",
+    dv = "value",
+    within = c("target", "emotion"),
+    data = long
+    )
+summary(m1)
+
+```
+
+## RM ANOVA
+
+- RM ANOVA
+
+```{r}
+library(emmeans)
+post.hoc <- emmeans(m1, specs = c("target","emotion"))
+pairs(post.hoc)
+```
+
+

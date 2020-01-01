@@ -1,0 +1,610 @@
+---
+title: "KoLab R Study Week 1"
+author: Kibum Moon
+date: March 28, 2019
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Week 1
+# Rstudio Interface
+
+## Windows
+### Console
+
+- prompt에 명령어를 입력하여 컴퓨터에게 작업을 시킴
+- ">"  대기상태
+- "+"  명령이 완전히 끝나지 않았음
+- 작업 수행 중에는 오른쪽 위에 빨간 버튼이 생김
+- 빨간 버튼이나 Esc키를 누르면 작업 강제 종료
+- 위, 아래 화살표로 이전 명령을 간단하게 불러올 수 있음
+
+
+## Windows
+### Source 
+    
+- 명령어 기록장 (for reproducibility)
+- comments (주석) "#": 컴퓨터에게 아무런 영향을 주지 않음
+- **Tips.**
+
+    - Ctrl + Enter: 한 줄 실행
+    - Ctrl. + 1, Ctrl. + 2: 커서 이동
+
+## Windows
+### Environment
+- 값들을 저장해 놓는 장소
+
+### Etc.
+- Files, Plots, Packages, Help, Viewer, etc.
+
+
+## Options
+
+- Tools -> Global Options 
+    
+    - Appearance
+        - Theme, Zoom, Font, **Editor Theme**, etc.
+    
+    
+    - **Pane layout**   
+        - **Tips.** Source & Console 위치 조정
+
+
+
+# 당장 활용할 수 있는 R
+
+## Process of Analysis
+
+- Data loading
+
+- Data checking 
+
+- Statistical testing
+
+- Plotting 
+
+## Data loading
+
+```{r}
+library(readxl)
+Week1_example1 <- read_excel("Week1_example1.xlsx")
+View(Week1_example1)
+```
+
+- 오잉?? library(readxl)이 뭐지?
+- 오잉?? read_excel("Week1_example1.xlsx")이 뭐지?
+
+## R 배경지식
+### Packages
+
+- 잘 정의된 형식의 R 함수, 데이터 및 컴파일된 코드의 모음 
+
+- 설치된 패키지는 library로 저장이 됨
+
+```{r eval=F}
+install.packages("sjPlot")
+```
+
+## R 배경지식
+### Library    
+- 설치된 패키지를 불러드릴 땐 library(패키지명)
+
+- library()는 Rstudio를 재시작할 때마다 로드해야 함
+
+```{r}
+library(sjPlot)
+```
+
+## R 배경지식
+### 이름 바꾸기    
+- 변수(variable)의 이름이 너무 길다!
+
+- 변수 이름 바꾸기
+
+```{r}
+# 불러올 때부터 짧은 이름으로 불러옴
+w1 <- read_excel("Week1_example1.xlsx")
+
+# 기존 데이터를 짧은 이름으로 바꿈
+w1 <- Week1_example1
+```
+
+## Data checking
+- 데이터 전체를 한 눈에 파악: str()
+
+    - Observations
+    - variables
+    - num ??? chr ???
+
+```{r}
+str(w1)
+```
+
+## R 배경지식
+### Function (함수)
+
+- 프로그래밍의 핵심 요소
+
+- 컴퓨터에게 행위를 시키는 역할 *(cf. 변수는 자료를 저장하는 역할)*
+
+- 함수를 직접 작성할 수 있음 
+
+- 함수명()
+
+## Data checking
+- 하나의 변인의 특성을 파악 (연속 변인)
+```{r}
+summary(w1$관계만족도)
+```
+
+## Data checking
+- 하나의 변인의 특성을 파악 (범주 변인)
+```{r}
+table(w1$정신건강범주)
+```
+
+## Statistical test
+### basic statistics
+```{r}
+mean(w1$관계만족도); sd(w1$관계만족도)
+max(w1$관계만족도); min(w1$관계만족도)
+```
+
+
+
+## Statistical test
+### t-test
+
+```{r}
+t.test(w1$사회지능, w1$정서지능)
+```
+
+## Statistical test
+### Correlation test
+```{r eval=F}
+cor.test(w1$사회지능, w1$정서지능)
+```
+
+## Correlation test
+### sjPlot
+
+- sjPlot: 상관표를 만드는 함수
+
+```{r  error = T}
+sjp.corr(w1)
+```
+
+## Correlation test
+### sjPlot
+- **Quiz.** 왜 실행이 안 될까?
+
+
+## R 배경지식
+### Data type
+- The five basic or atomic classes of obects (data type):
+
+    - Logical
+    - Numeric (real number)
+    - Integer
+    - Complex
+    - Character
+
+
+
+
+## R 배경지식
+### Indexing
+
+- 원하는 변인 사이의 상관을 확인하려면?
+
+- 전체 데이터에서 원하는 데이터를 골라내야 한다!
+
+- 전체 데이터에서 원하는 요소를 뽑아내는 방법: 
+
+    Indexing **(Very important)**
+
+## R 배경지식
+### Indexing
+
+- data[ ] : data[ ] 안에 행 또는 행, 열을 숫자로 입력
+
+```{r}
+a <- c("언니네","아저씨","에베레스트")
+a[1]; a[2]; a[3]
+```
+
+- c() : 기본 데이터 묶음(vector)을 만드는 명령어
+
+## R 배경지식
+### Indexing
+- [ ]
+
+    - 요소가 3개인 데이터는 각각 [1], [2], [3]으로 indexing 가능
+    
+    - 여러 개의 요소를 한 번에 indexing할 수 있음: 1:2, 2:3, 1:3
+
+```{r}
+a[1:2]; a[2:3]; a[1:3]
+```
+    
+
+## R 배경지식
+### Indexing
+
+- 우리의 데이터(w1)는 행과 열로 이루어져 있음 
+- w1[row, column]
+
+    - 행 또는 열의 경우 Vector의 형태로 indexing 가능
+        
+        - w1[c(1, 2, 3), 1]
+        - w1[1, c(1, 2, 3)]
+        - w1[1, c("ID", "rs")]
+
+## R 배경지식
+### Indexing
+
+- data$변인명, data[row, column]
+
+    - 전체 행 또는 전체 열을 indexing 할 경우 , 를 사용
+    
+        - data[1, 1] : 1행 1열의 값
+        - data[1, ] : 1행의 전체 열  
+        - data[, 1] : 1열의 전체 행
+
+
+## R 배경지식
+### Indexing
+
+```{r eval = T}
+w1[1, 1]; 
+```
+
+## R 배경지식
+### Indexing
+
+```{r eval = T}
+w1[1, ]
+```
+
+## R 배경지식
+### Indexing
+
+```{r eval = T}
+w1[, 1]
+```
+## R 배경지식
+### Indexing
+
+- $ 기호 사용
+
+- data이름$variable이름[row]
+
+```{r}
+w1$ID
+w1$gender
+```
+
+## R 배경지식
+### Indexing
+- 1번째와 10번째 참가자의 ID
+
+```{r}
+w1[1, 1]; w1[10, 1] 
+w1$ID[1]; w1$ID[10] 
+```
+
+## R 배경지식
+### Indexing
+
+- **Quiz.** 11 ~ 13번째 참여자의 ID는?
+
+
+## R 배경지식
+### Indexing
+
+- **Quiz.** 11 ~ 13번째 참여자의 ID는?
+```{r}
+w1[11:13, 1]; w1[11:13, "ID"]; w1$ID[11:13]
+```
+
+## R 배경지식
+### Indexing
+- **Quiz.** 30번째 참여자의 사회지능은?
+
+
+## R 배경지식
+### Indexing
+- **Quiz.** 30번째 참여자의 사회지능은?
+
+```{r}
+w1[30, 6]; w1[30, "사회지능"]; w1$사회지능[30]
+```
+
+## R 배경지식
+### Indexing
+- **Quiz.** 16번째 참여자의 정서WB, 사회WB, 심리WB은?
+
+
+## R 배경지식
+### Indexing
+- **Quiz.** 16번째 참여자의 정서WB, 사회WB, 심리WB은?
+
+```{r}
+w1[16, 3:5]; w1[16, c("정서WB", "사회WB", "심리WB")]
+```
+
+
+## R 배경지식
+### Indexing
+- **Quiz.** 15 ~ 30번째 참여자의 정서WB의 최대값과 최소값은?
+
+
+
+## R 배경지식
+### Indexing
+- **Quiz.** 15 ~ 30번째 참여자의 정서WB의 최대값과 최소값은?
+```{r}
+max(w1[15:30, 3]); max(w1$정서WB[15:30])
+min(w1[15:30, 3]); min(w1$정서WB[15:30])
+```
+
+## R 배경지식
+### Indexing
+- **Quiz.** 전체 참여자의 관계만족도의 평균은?
+
+## R 배경지식
+### Indexing
+- **Quiz.** 전체 참여자의 관계만족도의 평균은?
+```{r}
+mean(w1[, 19]); mean(w1$관계만족도)
+```
+
+## R 배경지식
+### Indexing
+- 특정 변수를 제외하는 것은 마이너스 기호(-)를 사용
+
+```{r eval=T}
+# 1~112번째 참여자를 제외한 참여자의 데이터
+w1[-(1:112), ]
+```
+
+## R 배경지식
+### Indexing
+- 특정 변수를 제외하는 것은 마이너스 기호(-)를 사용
+
+```{r}
+# 정서WB을 제외한 전체 데이터
+w1[, -3]
+```
+
+
+## R 배경지식
+### Indexing
+- **Quiz.**  2-17번째까지의 변수를 제외한 전체 데이터
+
+## R 배경지식
+### Indexing
+- **Quiz.**  2-17번째까지의 변수를 제외한 전체 데이터
+```{r}
+w1[, -(2:17)]
+```
+
+## R 배경지식
+### Indexing
+- **Quiz.**  3, 5, 7번째 변수를 제외한 전체 데이터
+
+## R 배경지식
+### Indexing
+- **Quiz.**  3, 5, 7번째 변수를 제외한 전체 데이터
+```{r}
+w1[, -c(3, 5, 7)]
+```
+
+
+## R 배경지식
+### Indexing
+- **Quiz.**  우리가 Indexing 왜 하고 있었지?
+
+## Correlation test
+### sjPlot
+- 원하는 변인들 사이의 상관 확인
+- column 이름으로 지우는 방법은 조금 더 어려움 
+```{r }
+sjp.corr(w1[,-c(1, 8)])
+```
+
+## Correlation test 
+### sjPlot
+- **Quiz.**  정서지능, 마키아벨리즘, 관계만족도 사이의 상관
+
+## Correlation test 
+### sjPlot
+- **Quiz.**  정서지능, 마키아벨리즘, 관계만족도 사이의 상관
+- 방법1
+
+```{r }
+sjp.corr(w1[, c(7, 15,19)])
+```
+
+## Correlation test 
+### sjPlot
+- **Quiz.**  정서지능, 마키아벨리즘, 관계만족도 사이의 상관
+- 방법2
+```{r }
+sjp.corr(w1[, c("정서지능", "마키아벨리즘", "우울", "관계만족도")])
+```
+
+## Correlation test 
+### sjPlot
+- **Quiz.**  정서지능, 마키아벨리즘, 관계만족도 사이의 상관
+- 방법3
+
+```{r }
+var <- c("정서지능", "마키아벨리즘", "우울", "관계만족도")
+sjp.corr(w1[, var])
+```
+
+## R 배경지식
+### Objects 활용하기
+
+- 반복적으로 사용하는 명령어, 범위, 숫자 등을 하나의 object로 정의
+
+```{r}
+par <- c(1, 2, 3, 6, 78, 101)
+mean(w1$정서WB[par]);mean(w1$사회WB[par]);mean(w1$심리WB[par])
+```
+
+## R 배경지식
+### Objects 활용하기
+- **Quiz.** 2, 4, 6, 11, 20 번째 참여자의 정서WB, 사회WB, 심리WB의 평균 구하기
+
+## R 배경지식
+### Objects 활용하기
+- **Quiz.** 2, 4, 6, 11, 20 번째 참여자의 정서WB, 사회WB, 심리WB의 평균 구하기
+
+```{r}
+par <- c(2, 4, 6, 11, 20)
+mean(w1$정서WB[par]);mean(w1$사회WB[par]);mean(w1$심리WB[par])
+```
+
+## Correlation test 
+### sjPlot
+
+- 논문 보고 형태
+```{r}
+sjt.corr(
+    w1[, var])
+```
+
+## Correlation test 
+### sjPlot
+- 그런데, 논문에서 보던 것과 모양이 다른데?
+- 아래 부분만 나오게 할 수는 없을까?
+
+## Correlation test 
+### sjPlot
+- **argument** 
+```{r}
+sjt.corr(
+    w1[, var],
+    triangle = "lower" 
+)
+```
+
+## R 배경지식
+### Argument
+
+- 함수를 더욱 미세하게 조정
+
+- 다양한 세부 옵션들 조정
+
+- 함수별 argument를 확인하고 싶으면??
+    
+    - help 기능 사용: ?함수명  ex) ?sjt.corr
+
+    - 구글링
+
+
+
+## Correlation test 
+### sjPlot
+- 워드로 저장할 수 없을까?
+
+```{r}
+sjt.corr(
+    w1[, var],
+    triangle = "lower",
+    file = "corr.test.doc"
+)
+```
+- 저장한 워드파일은 어디에 있을까?
+
+## R 배경지식_(7)
+### Directory
+
+- 컴퓨터 내에서 파일이 저장되는 구조
+
+- OS 마다 다름
+
+- Directory의 구조를 알아야 자료를 불러오고 저장할 수 있음
+
+- ex. "C:/Users/a0728/Dropbox/study"
+
+
+## R 배경지식_(7)
+### Working directory (작업 공간)
+
+- R에서 작업이 일어나는 공간
+
+- setwd(): Working directory 설정
+
+    - GUI: 
+    
+    - setwd("C:/Users/a0728/Dropbox/study")
+
+- getwd(): 작업 공간 확인
+
+```{r}
+getwd()
+```
+
+## R 배경지식_(7)
+### Path
+
+- 절대 경로
+
+    - 처음부터 찾아가기
+
+- 상대 경로
+
+    - Working directory로부터의 경로
+    
+    - ./  : Working directory까지의 경로
+        
+        - ex. "./폴더이름/파일이름" 
+        
+    - ../ : Working directory 상위 폴더로 이동
+        
+        - ex. "../폴더이름/파일이름" 
+        
+## R 배경지식_(7)
+### File extensions 
+
+- 컴퓨터 파일의 이름에서 파일의 종류와 그 역할을 표시하기 위해 사용하는 부분    
+
+- csv, xls, xlsx, jpg, png, etc.
+
+
+## Correlation test 
+### sjPlot
+
+```{r}
+sjt.corr(
+    w1[, var],
+    triangle = "lower",
+    file = "corr.test.doc"
+)
+```
+
+## Plotting
+### histogram
+```{r}
+hist(w1$관계만족도)
+```
+
+## Plotting
+### Scatter plot
+```{r}
+plot(w1$관계만족도)
+```
+
+## Plotting
+### Scatter plot
+```{r}
+plot(w1$관계만족도, w1$정서지능)
+```
+

@@ -1,0 +1,676 @@
+---
+title: "KoLab R Study Week 3"
+author: Kibum Moon
+date: April 25, 2019
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Week 3
+
+# Review
+
+## Review
+
+- data(Week2_example1.xlsx)를 w2으로 불러오기
+- **Quiz.** data (Week3_example1.xlsx)를 w3으로 불러오기 (1p)
+
+
+## Review
+
+- data(Week2_example1.xlsx)를 w2으로 불러오기
+- **Quiz.** data (Week3_example1.xlsx)를 w3으로 불러오기 (1p)
+
+    - library loading
+    - working directory 설정
+    - 함수 read_xlsx() 사용 
+    
+```{r}
+library(readxl)
+setwd("E:/Dropbox/study/R_study/19.03.28_R_study (Kolab)")
+#setwd("C:/Users/a0728/Dropbox/study/R_study/19.03.28_R_study (Kolab)")
+w2 <- read_xlsx("Week2_example1.xlsx")
+w3 <- read_xlsx("Week3_example1.xlsx")
+```
+
+## Review
+
+- **Quiz.** w2 data의 전체 변인 끼리의 상관을 for loop를 사용해 출력하기 (2p)
+
+## Review
+
+- **Quiz.** w2 data의 전체 변인 끼리의 상관을 for loop를 사용해 출력하기 (2p)
+
+```{r}
+for (i in 1:ncol(w2)){
+    for (k in 1:ncol(w2)){
+        r <- cor.test(w2[[i]], w2[[k]])
+        print(r)
+    }
+}
+```
+
+# Auto correlation plotter (cont'd.)
+
+
+## Auto correlation plotter
+
+- w3 data의 전체 변인 끼리의 상관을 for loop를 사용해 출력하기
+
+```{r eval = F}
+for (i in 1:ncol(w3)){
+    for (k in 1:ncol(w3)){
+        r <- cor.test(w3[[i]], w3[[k]])
+        print(r)
+    }
+}
+
+```
+
+## Auto correlation plotter
+
+- w3 data의 전체 변인 끼리의 상관을 for loop를 사용해 출력하기
+
+- **Quiz.** 왜 안될까? (2p)
+
+
+## Auto correlation plotter
+
+- w3 data의 전체 변인 끼리의 상관을 for loop를 사용해 출력하기
+
+- **Quiz.** 왜 안될까? (2p)
+
+- **Quiz.** 해결책은 무엇일까? (2p)
+
+## Conditional statements (조건문)
+### if statement
+
+```{r eval = F}
+if (조건) {
+  조건에 해당하면 실행될 코드
+}
+```
+- 조건에 따라 {} 안에 있는 코드를 실행
+
+- 조건이 참이 아니면 코드를 실행하지 않음
+
+
+## Conditional statements (조건문)
+### if statement
+
+```{r}
+age <- 20
+if (age>=19) {
+    print("성인")
+}
+
+age <- 15
+if (age>=19) {
+    print("성인")
+}
+
+```
+
+## Conditional statements (조건문)
+### if statement + else 
+```{r eval = F}
+if (조건) {
+    조건에 해당하면 실행될 코드
+} else {
+    조건에 해당하지 않으면 실행될 코드
+}
+```
+
+- 조건에 해당하지 않으면 else 안에 있는 코드가 실행됨
+
+- if statement의 마지막 } 에 else를 이어서 씀
+
+## Conditional statements (조건문)
+### if statement
+
+```{r}
+age <- 15
+if (age >= 19) {
+print("성인")
+} else {
+print("미성년자")
+}
+
+```
+
+
+## Conditional statements (조건문)
+### if statement + else 
+
+- **Quiz.** 입력된 수(x)가 짝수면 "짝수", 홀수면 "홀수"를 출력하는 if statement (4p)
+- %% 활용
+- a와 b는 같다: a == b  
+
+## Conditional statements (조건문)
+### if statement + else 
+
+- **Quiz.** 입력된 수(x)가 짝수면 "짝수", 홀수면 "홀수"를 출력하는 if statement (4p)
+- %% 활용
+- a와 b는 같다: a == b  
+
+```{r}
+x <- 4
+if (x%%2==0) {
+    print("짝수")
+} else {
+print("홀수")
+}
+```
+## Conditional statements (조건문)
+### if statement + else 
+
+- **Quiz.** 입력된 수(x)가 짝수면 "짝수", 홀수면 "홀수"를 출력하는 if statement (4p)
+- %% 활용
+- a와 b는 같다: a == b  
+
+```{r}
+x <- 5
+if (x%%2==0) {
+    print("짝수")
+} else {
+print("홀수")
+}
+
+```
+## Conditional statements (조건문)
+### if statement + else 
+
+- **Quiz.** 1부터 30까지의 정수가 3의 배수이면 "3의 배수" 3의 배수가 아니면 "3의 배수가 아님"을 출력하는 코드를 짜보세요 (3p)
+
+
+## Conditional statements (조건문)
+### if statement + else 
+
+- **Quiz.** 1부터 30까지의 정수가 3의 배수이면 "3의 배수" 3의 배수가 아니면 "3의 배수가 아님"을 출력하는 코드를 짜보세요 (3p)
+
+```{r}
+for (i in 1:30) {
+    if (i %% 3 == 0) {
+    print("3의 배수")
+    } else {
+    print("3의 배수 아님")
+    }
+}
+```
+
+## Conditional statements (조건문)
+### if statement + else 
+
+- **Quiz.** 1부터 30까지의 정수가 5의 배수**이면서** 10의 배수가 아니면 "Target number"를 출력하는 코드를 짜보세요 (3p)
+
+    - a != b : "a와 b는 다르다" 참, 거짓 판별
+    
+    - P & Q : P and Q, P와 Q의 교집합
+
+## Conditional statements (조건문)
+### if statement + else 
+
+- **Quiz.** 1부터 30까지의 정수가 5의 배수**이면서** 10의 배수가 아니면 "Target number"를 출력하는 코드를 짜보세요 (3p)
+
+    - a != b : "a와 b는 다르다" 참, 거짓 판별
+```{r}
+for (i in 1:30) {
+    if (i %% 5 == 0 & i %% 10 != 0) {
+    cat(i,"= Target number\n")
+    }
+}
+```
+
+
+
+
+
+## Auto correlation plotter
+
+- **Quiz.** w3 data의 전체 변인 끼리의 상관을 for loop를 사용해 출력하기 (4p)
+
+    - is.numeric(): 해당 변인이 numeric인지 아닌지 알려주는 함수
+    
+    - 같은 변인끼리의 상관분석 제외: != 사용
+
+## Auto correlation plotter
+
+- **Quiz.** w3 data의 전체 변인 끼리의 상관을 for loop를 사용해 출력하기 (4p)
+
+    - is.numeric(): 해당 변인이 numeric인지 아닌지 알려주는 함수
+
+```{r eval = F}
+for (i in 1:ncol(w3)) {
+    for (k in 1:ncol(w3)) {
+        if (is.numeric(w3[[i]]) & is.numeric(w3[[k]]) & i!=k) {
+            r <- cor.test(w3[[i]], w3[[k]])
+            print(r)
+        }
+    }
+}
+
+```
+
+## Auto correlation plotter
+
+- 통계 분석의 결과도 하나의 object로 저장할 수 있음
+```{r}
+r <- cor.test(w3[["emo.wb"]], w3[["soc.wb"]])
+r
+```
+
+
+## Auto correlation plotter
+
+- 통계 분석의 결과 중 일부를 indexing을 사용해 불러올 수 있다.
+
+
+```{r}
+r$p.value;r[[3]] # 유의도 
+r$estimate;r[[4]] # 상관계수 
+```
+
+
+## List
+### Correlation test의 결과
+
+```{r}
+class(r)
+```
+
+- htest 는 List의 한 종류
+
+
+## Data structure (자료 구조)
+
+- Vector   
+
+    - **Quiz.** What is a vector? (1p) 
+
+- **Lists** ◁ 오늘은 List
+
+- Matrices 
+
+- Arrays
+
+- Factors 
+
+- Data Frames 
+
+
+
+## List
+
+- 다양한 type의 element를 저장할 수 있음
+
+    - vectors, fucntions, matrix, another list, etc.
+
+- List의 형태로 통게 분석의 결과를 제공하는 패키지가 많음
+
+- 잡다구레한 데이터를 하나에 꾸겨넣을 수 있음
+
+```{r eval = T}
+a <- list(c("아저씨", "언니네", "에베레스트"), c(1, 2, 3, 4), pi)
+a; class(a)
+```
+
+
+## List
+### Correlation test의 결과
+
+```{r}
+for (i in 1:9){
+    print(r[[i]])
+}
+```
+
+## List
+### Correlation test의 결과
+
+- 상관 분석의 경우 상관 계수와 유의도가 중요한 지표
+
+```{r}
+r$p.value;r[[3]] # 유의도 
+r$estimate;r[[4]] # 상관계수 
+```
+
+## Auto correlation plotter
+
+- **Quiz.** 각 변인들의 상관이 유의한지 아닌지 자동으로 확인하는 for loop는 어떤 logic으로 구성할까? (2p)
+
+    - 1단계
+    
+    - 2단계
+    
+    - 3단계
+    
+    - 4단계
+
+
+
+## Auto correlation plotter
+
+- **Quiz.** 각 변인들의 상관이 유의한지 아닌지 자동으로 확인하는 for loop는 어떤 logic으로 구성할까? (2p)
+
+    - 1단계: 중복되지 않는 두 변인 선택
+    
+    - 2단계: 두 변인 모두가 numeric value인지 확인
+    
+    - 3단계: 상관분석 실시
+    
+    - 4단계: 유의도(p value)가 0.05이하인지 확인
+
+
+
+## Auto correlation plotter
+
+- **Quiz.** 자동으로 각 변인들의 상관이 유의한지 아닌지 확인한 후 유의하면 "유의"를 출력하는 for loop 코드 (4p)
+
+
+## Auto correlation plotter
+
+- **Quiz.** 자동으로 각 변인들의 상관이 유의한지 아닌지 확인한 후 유의하면 "유의"를 출력하는 for loop 코드 (4p)
+
+```{r}
+for (i in 1:ncol(w3)) {
+    for (k in 1:ncol(w3)) {
+        if (is.numeric(w3[[i]]) & is.numeric(w3[[k]]) & i != k) {
+            r <- cor.test(w3[[i]], w3[[k]])
+            p.value <- r$p.value
+            if (p.value < 0.05) {
+                print("유의")
+            }
+        }
+    }
+}
+```
+## Auto correlation plotter
+
+- **Quiz.** 자동으로 각 변인들의 상관이 유의한지 아닌지 확인한 후 유의하면 "유의"를 출력하는 for loop 코드 (4p)
+
+```{r}
+for (i in 1:ncol(w3)) {
+    for (k in 1:ncol(w3)) {
+        if (is.numeric(w3[[i]]) & is.numeric(w3[[k]]) & i != k) {
+            r <- cor.test(w3[[i]], w3[[k]])
+            if (p.value < 0.05) {
+                p.value <- round(r$p.value, 2)  #반올림 함수
+                cor <- round(r$estimate, 2)
+                cat(names(w3)[i],"&",names(w3)[k], 
+                    "cor:", cor, "p value", p.value, "\n")
+            }
+        }
+    }
+}
+```
+
+
+## Auto correlation plotter
+### Data adding
+
+- 상관 분석의 결과를 화면에 출력하는 대신 data의 형태로 저장
+
+- For loop에서 유의한 결과를 하나하나 쌓아서 1개의 data를 만드는 개념
+
+
+## Data structure (자료 구조)
+
+- Vector   
+
+- Lists
+
+- Matrices 
+
+- Arrays
+
+- Factors 
+
+- **Data Frames** ◁ 오늘은 Data frame 
+
+
+
+## Data Frames
+
+- 2차원 구조
+
+- Matrix와 달리 여러 개의 data type을 가질 수 있음
+
+    - one of numeric, factor, and character type
+
+- 엑셀의 자료 구조와 동일함 (w2, w3 자체가 data frame임)
+
+- 가장 많이 사용함
+
+## Data Frames
+
+```{r eval = T}
+a <- data.frame(
+    restaurant = c("아저씨", "언니네","에베레스트"),
+    price = c("$$$","$$","$$$$"),
+    taste = c(9,8,7))
+a
+```
+
+## Data Frames
+
+- **Quiz** 아래의 data.frame을 직접 만들어 보자. (1p)
+
+```{r echo = F }
+c1 <- 1:5
+c2 <- c(2,4,6,8,10)
+c3 <- c1*c2
+data <- data.frame(c1, c2, c3) #c1, c2, c3합쳐서 1개의 데이터를 만듦
+print(data)
+```
+
+## Data Frames
+
+- **Quiz** 아래의 data.frame을 직접 만들어 보자. (1p)
+
+```{r}
+c1 <- 1:5
+c2 <- c(2,4,6,8,10)
+c3 <- c1*c2
+data <- data.frame(c1, c2, c3) #c1, c2, c3합쳐서 1개의 데이터를 만듦
+print(data)
+```
+
+## Data Frames
+
+- Data frame의 column의 이름 변경
+
+```{r}
+names(data)
+names(data)[1] <- "1st"
+data
+```
+
+## Data Frames
+
+- Data frame의 column의 이름 변경
+
+```{r}
+names(data) <- c("1st", "2nd", "3rd")
+names(data)
+data
+```
+
+
+
+## Data Frames
+### **Indexing**
+
+- 지금까지 배운 Indexing이 거의 data frame 구조의 자료를 indexing하는 방법
+
+    - data$변인명, data[["변인명"]]
+
+    - data["행이름", "열이름"], data[행번호, 열번호] 
+    
+    - etc.
+
+
+## Data Frames
+### Data adding 
+
+- rbind(원래 data, 추가할 data)
+
+- row bind : 행추가
+
+```{r}
+dim(data)
+r1 <- 1:ncol(data)
+r.added <- rbind(data, r1)
+dim(r.added)
+```
+
+## Data Frames
+### Data adding 
+
+- rbind(원래 data, 추가할 data)
+
+- row bind : 행추가
+
+```{r}
+r.added
+```
+
+## Data adding 
+
+- cbind(원래 data, 추가할 data) 
+
+- column bind : 열추가
+
+```{r}
+dim(data)
+c <- 1:nrow(data)
+c.added <- cbind(data, c)
+dim(c.added)
+```
+
+## Data adding 
+
+- cbind(원래 data, 추가할 data) 
+
+- column bind : 열추가
+
+```{r}
+c.added
+```
+
+
+## Data adding 
+
+- 구구단을 2단을 1개의 data frame으로 만드는 for loop
+
+```{r eval = F}
+for (i in 1:9) {
+    result <- data.frame(2, i, 2 * i)
+    whole.result <- rbind(whole.result, result)
+}
+```
+## Data adding 
+
+- 구구단을 2단을 1개의 data frame으로 만드는 for loop
+
+```{r}
+whole.result <- data.frame() # 담을 그릇을 만들어주는 역할
+for (i in 1:9) {
+    result <- data.frame(2, i, 2 * i)
+    whole.result <- rbind(whole.result, result)
+}
+whole.result
+
+```
+
+## Data adding 
+
+- 구구단을 2단을 1개의 data frame으로 만드는 for loop
+
+```{r}
+for (i in 1:9) {
+    whole.result <- data.frame() # 담을 그릇을 만들어주는 역할
+    result <- data.frame(2, i, 2 * i)
+    whole.result <- rbind(whole.result, result)
+}
+whole.result
+
+```
+
+## Auto correlation plotter
+### Data adding
+
+- psy.wb과 soc.wb의 결과를 하나의 행으로 만들기
+- 변인명1, 변인명2, 상관계수, 유의도
+
+```{r}
+r <- cor.test(w3$psy.wb, w3$soc.wb)
+cor <- round(r$estimate, 2)
+p.value <- round(r$p.value, 2)  
+one.row <- data.frame("psy.wb", "soc.wb", cor, p.value)
+one.row
+```
+
+## Auto correlation plotter
+
+- **Quiz.** w3 변인 간의 상관 중 유의한 결과만을 저장하는 for loop. (5p)
+- 변인명1, 변인명2, 상관계수, 유의도
+
+## Auto correlation plotter
+
+- **Quiz.** w3 변인 간의 상관 중 유의한 결과만을 저장하는 for loop. (5p)
+
+```{r}
+whole.data <- data.frame()
+for (i in 1:ncol(w3)) {
+    for (j in 1:ncol(w3)) {
+        if (is.numeric(w3[[i]]) & is.numeric(w3[[j]])  & i != j) {
+            r <- cor.test(w3[[i]], w3[[j]])
+            p.value <- r$p.value
+            if (p.value < 0.05) {
+                p.value <- round(p.value, 2)
+                cor <- round(r$estimate, 2)
+                data <-
+                    data.frame(names(w3)[i], names(w3)[j], cor, p.value)
+                whole.data <- rbind(whole.data, data)
+            }
+        }
+    }
+}
+```
+
+## Auto correlation plotter
+
+- **Quiz.** w3 변인 간의 상관 중 유의한 결과만을 저장하는 for loop. (5p)
+
+```{r}
+whole.data
+```
+
+## Auto correlation plotter
+
+- **Quiz.** Whole.data의 각 column이름을 "Var1", "Var2", "Cor", "P"으로 변경. (3p)
+
+
+## Auto correlation plotter
+
+- **Quiz.** Whole.data의 각 column이름을 "Var1", "Var2", "Cor", "P"으로 변경. (3p)
+
+```{r}
+names(whole.data) <- c("Var1", "Var2", "Cor", "P")
+whole.data
+```
+
+## Auto correlation plotter
+
+- Excel file로 저장
+
+```{r eval=F}
+# install.packages("writexl")
+library(writexl)
+write_xlsx(whole.data, path = "Week3_cor.result.xlsx")
+```
+
+
+

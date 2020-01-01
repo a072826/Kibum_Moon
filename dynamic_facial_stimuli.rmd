@@ -1,0 +1,19 @@
+---
+title: "Dynamic Emotional Facial Stimuli"
+author: "Kibum Moon"
+date: 'Dec.26.2019'
+output: 
+  rmdformats::readthedown
+    # css: css.css
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = F,
+	message = F,
+	warning = FALSE,
+	cache = T
+)
+```
+

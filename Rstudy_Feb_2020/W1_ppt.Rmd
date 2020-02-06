@@ -1,0 +1,350 @@
+---
+title: "R study"
+author: "문기범"
+date: '2020.02.04'
+output: 
+  revealjs::revealjs_presentation:
+    fig.hight: 5
+    fig_caption: true    
+    theme: white
+    center: true
+    highlight: haddock
+    transition: convex
+    self_contained: true
+    reveal_options:
+      slideNumber: true  
+---
+
+# Week 3
+
+
+<style>
+.container{
+    display: flex;
+}
+.col{
+    flex: 1;
+}
+
+.reveal {
+  font-family: "Source Sans Pro", Helvetica, sans-serif;
+  font-size: 25px;
+  font-weight: normal;
+  color: #222; }
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  text-transform: none;
+}
+
+
+.p_iframe iframe {
+    width:90%;
+    height:576px;
+}
+
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, message = F, warning = F, cache=F,
+                      out.width="60%", out.height = "60%",  
+                      fig.show='hold', fig.align = 'center')
+library(readxl) # read excel files 
+library(tidyverse) # tidy packages
+library(broom) # converting statistical analysis objects into tidy tibbles
+library(plotly) # making interactive plots with ggplot objects
+theme_set(theme_light()) # change default plot theme
+library(kableExtra)
+```
+
+# *The future is here, it’s just not evenly distributed yet.*
+*- William Gibson*
+
+
+
+
+## R vs SPSS 
+
+```{r, out.width="150%", out.height = "150%",  fig.show='hold', fig.align = 'center', echo=F}
+
+knitr::include_graphics(c("W1_trends.png"))
+```
+
+ <font size="2">
+[링크](https://trends.google.co.kr/trends/explore?date=all&q=%2Fm%2F0212jm,spss)
+ </font>
+ 
+
+##
+
+```{r echo=F}
+# meme
+knitr::include_graphics(c("https://miro.medium.com/max/700/1*x7P7gqjo8k2_bj2rTQWAfg.jpeg"))
+
+```
+
+
+## 
+
+```{r, out.width="110%", out.height = "110%",  fig.show='hold', fig.align = 'center', echo=F}
+# venn diagram
+knitr::include_graphics(c("https://miro.medium.com/max/2147/1*A7INg5MJHVshBNDwJOX5Aw.jpeg"))
+
+```
+
+
+## 심리검사 결과지
+
+<div class="p_iframe">
+<iframe frameborder="0" seamless='seamless' scrolling=yes src="W1_report_example.html"></iframe>
+</div>
+
+
+
+## 웹사이트
+
+<div class="p_iframe">
+<iframe frameborder="0" seamless='seamless' scrolling=no src="https://a072826.shinyapps.io/hwasoon_network/"></iframe>
+</div>
+
+
+## Article
+
+<div class="p_iframe">
+<iframe frameborder="0" seamless='seamless' scrolling=yes src="W1_report_example2.html"></iframe>
+</div>
+
+
+## Animated plot
+
+![](W1_gif.gif)
+
+
+# Data literacy with R
+
+- 수집 (import)
+- 정리 (tidy)
+- 변형 (transform)
+
+
+==> 분석 (analysis, modeling)
+
+## 
+
+```{r, out.width="100%", out.height = "100%",  fig.show='hold', fig.align = 'center', echo=F}
+
+knitr::include_graphics(c("tidyverse.png"))
+
+```
+
+## Goals
+
+- 수집 / 정리 / 변형 / 분석
+
+- tidy data set
+
+- 기초 통계 / t검정 / 회귀 분석 / **다층 모형**  Powered by R
+
+- 분석 결과 보고 (ggplot2, Rmarkdown)
+
+
+## Data literacy
+
+- 예시 데이터
+
+```{r echo = T}
+data <- readxl::read_xlsx("W3_data.xlsx")
+data 
+```
+
+## Data literacy
+
+- 산점도
+
+```{r echo = T}
+data %>% 
+  ggplot(aes(성적, 월소득)) +
+  geom_point()
+
+```
+
+## Data literacy
+
+- 회귀선 추가
+
+```{r echo = T}
+data %>% 
+  ggplot(aes(성적, 월소득)) +
+  geom_point() +
+  geom_smooth(method = 'lm')
+```
+
+## Data literacy
+
+- 단순 회귀 분석 결과
+
+```{r echo = T}
+data %>% 
+  lm(성적 ~ 월소득, data = .) %>% 
+  tidy()
+
+```
+
+
+## Data literacy
+
+- 지역 구분
+
+```{r echo = T}
+
+data %>% 
+  ggplot(aes(성적, 월소득, color = 지역)) +
+  geom_point() +
+  geom_smooth(method = 'lm')
+
+```
+
+
+## Data literacy
+
+- 상호작용 효과 분석
+
+```{r echo = T}
+data %>% 
+  lm(성적 ~ 월소득 * 지역, data = .) %>% 
+  tidy() 
+```
+
+## Data literacy
+
+-  학교 구분
+
+```{r echo = T}
+data %>% 
+  ggplot(aes(성적, 월소득, color = 학교)) +
+  geom_point() +
+  geom_smooth(method = 'lm') +
+  facet_wrap(~학교)
+```
+
+## Data literacy
+
+- 학교별 회귀분석
+
+```{r}
+data %>% 
+  nest(-학교) %>% 
+  mutate(lm = map(data, ~ lm(성적 ~ 월소득, data = .x))) %>% 
+  mutate(tidied = map(lm, tidy)) %>% 
+  unnest(tidied) %>% 
+  select(-data, -lm) %>% 
+  filter(term != "(Intercept)") %>% 
+  arrange(학교, -estimate)
+
+```
+
+
+## Data literacy
+
+- 기초 통계
+
+```{r echo = T}
+data %>%
+  group_by(학교) %>%
+  summarise(mean_월소득 = mean(월소득, na.rm=T),
+            mean_성적 = mean(성적, na.rm=T),
+            sd_월소득 = sd(월소득, na.rm=T),
+            sd_성적 = sd(성적, na.rm=T))
+```
+
+
+
+# Latte is horse.
+*라떼는 말이야*
+
+```{r out.width="40%", out.height = "40%", echo=F}
+
+knitr::include_graphics(c("https://i.pinimg.com/736x/db/f3/e6/dbf3e64f282c540b7cf4a0a10f813893--coffee-latte-art-cappuccino-art.jpg"))
+
+```
+
+## Tidyverse
+
+```{r echo=F}
+
+knitr::include_graphics(c("https://biostat2.uni.lu/lectures/img/01/tidyverse_data_science.png"))
+
+```
+
+
+## Gapminder data: 
+
+- `기대수명` ~ `1인당 GDP` by `년도`
+- tibble? data.frame?
+
+```{r echo = T}
+# install.packages('gapminder')
+library(gapminder)
+gapminder
+
+```
+
+
+## dplyr
+
+```{r}
+knitr::include_graphics(c("https://rworkshop.uni.lu/lectures/img/06/vaudor_dplyr_schema.png"))
+```
+
+*https://rworkshop.uni.lu/lectures/lecture06_dplyr.html#55*
+
+
+## group_by() %>% summarize()
+
+```{r}
+knitr::include_graphics(c("https://statkclee.github.io/r-novice-gapminder/fig/13-dplyr-fig3.png"))
+
+```
+
+*https://statkclee.github.io/r-novice-gapminder/13-dplyr-kr.html*
+
+
+## 
+
+```{r}
+knitr::include_graphics(c("W1_dplyr_circle.png"))
+
+```
+
+*https://campus.datacamp.com/courses/exploratory-data-analysis-in-r-case-study/data-cleaning-and-summarizing-with-dplyr?ex=9*
+
+
+
+
+
+
+
+
+<!-- ## *Happy families are all alike;<br>every unhappy family is unhappy <br>in its own way.* -->
+<!-- *- Leo Tolstoy* -->
+
+
+
+## 추천 사이트
+
+인강 (첫 챕터 무료)
+
+https://www.datacamp.com/courses/exploratory-data-analysis-in-r-case-study
+
+백과사전
+
+https://b-rodrigues.github.io/modern_R/index.html
+
+신과 함께
+
+https://www.google.com
+
